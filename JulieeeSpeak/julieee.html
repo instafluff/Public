@@ -1,0 +1,142 @@
+<html>
+
+<head>
+  <title>Highlighted Messages Viewer for Julieee22!</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135113520-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-135113520-1');
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/comfy.js/dist/comfy.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Hind|Open+Sans&display=swap" rel="stylesheet">
+  <style>
+    h2 {
+        font-family: 'Hind', sans-serif;
+        font-size: 2vw;
+    }
+
+    h2, p {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 2vw;
+        color: white;
+        height: 100%;
+    }
+
+    li {
+        margin: 0 0 3px 0;
+    }
+
+    .parent-container {
+        height: 100%;
+        /* vertical-align: bottom; */
+    }
+
+    .translucent-bg {
+        padding: 1vw;
+        border-radius: 2px;
+        background: rgba( 0, 0, 0, 0.5);
+        width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="parent-container" class="parent-container">
+    <ul id="highlighted-messages">
+    </ul>
+  </div>
+  <audio id="audio" controls="" style="visibility: hidden;">
+    <source id="source" type="audio/wav">
+  </audio>
+  <script>
+    const elements = {
+        source: document.querySelector( "#source" ),
+        audio: document.querySelector( "#audio" ),
+        messages: document.querySelector( "#highlighted-messages" )
+    };
+    const TTS_BASE = "https://api.streamelements.com/kappa/v2/speech";
+    const params = new URLSearchParams( location.search );
+    const channel = params.get( "channel" );
+    const isTTSEnabled = true;
+    const ttsVoice = params.get( "voice" ) || "Brian";
+    let cooldownTimer = null;
+    let messages = [];
+
+    function queueMessage( user, message, extra ) {
+        const element = document.createElement( "li" );
+        element.className = "translucent-bg";
+        element.setAttribute( "id", `msg_${extra.id}` );
+
+        const username = document.createElement( "h2" );
+        username.innerText = user;
+        username.style.color = extra.userColor;
+        element.appendChild( username );
+
+        const msg = document.createElement( "p" );
+        msg.innerText = message;
+        element.appendChild( msg );
+
+        elements.messages.appendChild( element );
+        element.onclick = function() {
+            speakMessage( message );
+            deleteMessage( extra.id );
+        }
+
+        setTimeout( () => {
+            deleteMessage( extra.id );
+        }, 30000 );
+    }
+
+    function deleteMessage( id ) {
+        elements.messages.removeChild( document.getElementById( `msg_${id}` ) );
+    }
+
+    async function speakMessage( message ) {
+        const qs = new URLSearchParams( {
+          voice: ttsVoice,
+          text: message.trim()
+        } );
+        const speak = await fetch( `${ TTS_BASE }?${ qs }` );
+        if( speak.status != 200 ) {
+          // await speak.text();
+          return;
+        }
+
+        // TODO: Switch to Web Audio API instead of using Audio elements.
+        const mp3 = await speak.blob();
+        const blobUrl = URL.createObjectURL( mp3 );
+        elements.source.src = blobUrl;
+        const audio = elements.audio;
+        audio.pause();
+        audio.load();
+        audio.volume = 1;
+        audio.play();
+    }
+
+    ComfyJS.onChat = ( user, message, flags, self, extra ) => {
+        if( flags.highlighted ) {
+          queueMessage( user, message, extra );
+        }
+    };
+
+    ComfyJS.onCommand = ( user, command, message, flags, extra ) => {
+        if( flags.highlighted ) {
+          queueMessage( user, `!${ command } ${ message }`, extra );
+        }
+    };
+
+    if( channel ) {
+        ComfyJS.Init( channel );
+    }
+  </script>
+</body>
+
+</html>
