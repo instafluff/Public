@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <title>Maaya Gift Bot</title>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135113520-1"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-135113520-1');
+          </script>
+        <script src="https://cdn.jsdelivr.net/npm/comfy.js/dist/comfy.min.js"></script>
+    </head>
+    <body>
+        <script>
+            const params = new URLSearchParams( location.search );
+            const oauth = params.get( "oauth" );
+            let gifts = [
+                "Sweet-scented Perfume",
+                "Chocolate Fondue",
+                "Chocolate & Wine",
+                "Persimmon and Coral Candle",
+                "Preserved Rose",
+                "Heart Shaped Bamboo",
+                "Cozy Warming Slippers",
+                "Warm Tea in a Giant Mug"
+            ];
+            if( params.get( "gifts" ) )
+            {
+                gifts = params.get( "gifts" ).split( "," ).map( x => x.trim() );
+            }
+
+            ComfyJS.onChat = ( user, message, flags, extra ) => {
+                if( message.startsWith( "TakeNRG" ) || message.startsWith( "PrideTake" ) || message.startsWith( "maayaHeart" ) ) {
+                    let gift = gifts[ Math.floor( gifts.length * Math.random() ) ];
+                    ComfyJS.Say( `/me Maaya gives a ${gift} to ${user}! GivePLZ 🎁` );
+                }
+                if( message.startsWith( "GivePLZ" ) || message.startsWith( "PrideGive" ) || message.startsWith( "maayaHug" ) ) {
+                    let gift = gifts[ Math.floor( gifts.length * Math.random() ) ];
+                    ComfyJS.Say( `/me ${user} gives a ${gift} to MaayaInsane! GivePLZ 🎁` );
+                }
+            }
+            ComfyJS.Init( "maayainsane", oauth );
+        </script>
+    </body>
+</html>
