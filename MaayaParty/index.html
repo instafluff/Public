@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>Maaya Party!</title>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135113520-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'UA-135113520-1');
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/party-js@1.0.0/party.min.js" integrity="sha256-MfBdF/k4DGg7A1rsQcQ4heKQMOOTnQhG21dFx7QywM8=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
+    </head>
+    <body>
+        <script>
+            const params = new URLSearchParams( location.search );
+            ComfyJS.onCommand = ( user, command, message, flags, extra ) => {
+                if( ( flags.broadcaster || flags.mod ) && command === "party" ) {
+                    console.log( "party!" );
+                    party.screen();
+                }
+            }
+            ComfyJS.onReward = ( user, reward, cost, extra ) => {
+                if( reward === "Happy Party Fun!" ) {
+                    party.screen();
+                }
+            }
+            ComfyJS.Init( params.get( "channel" ), params.get( "oauth" ) );
+        </script>
+    </body>
+</html>
