@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <title>Kimmy Avatar</title>
+        <script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+        <style>
+        html, body {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 40px;
+        }
+
+        #display h1 {
+            position: relative;
+            float: left;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="display">
+            <img id="kimmy" src="assets/kimmyIdle.gif" align="left"/>
+            <h1 id="text"></h1>
+        </div>
+        <script>
+            const params = new URLSearchParams( location.search );
+            function showImage( image ) {
+                var img = document.getElementById( "kimmy" );
+                img.src = image;
+            }
+
+            var helloUsers = {};
+            var helloQueue = [];
+            var isWaving = false;
+
+            function wave( name ) {
+                if( !helloUsers[ name ] ) {
+                    helloUsers[ name ] = true;
+                    helloQueue.push( name );
+                }
+            }
+
+            ComfyJS.onChat = ( user, message, flags, self, extra ) => {
+                // Handle Chat Messages
+                if( !flags.broadcaster ) {
+                    wave( user );
+                }
+            }
+            ComfyJS.Init( params.get( "channel" ) );
+
+            var prevTime = null;
+
+            function updateFrame( timestamp ) {
+                if( !prevTime ) {
+                    prevTime = timestamp;
+                }
+
+                let timeDiff = timestamp - prevTime;
+
+                if( !isWaving && helloQueue.length > 0 ) {
+                    isWaving = true;
+                    let name = helloQueue.shift();
+                    document.getElementById( "text" ).innerText = `Hi, ${name}!`;
+                    showImage( "assets/kimmyHi.gif" );
+                    setTimeout( () => {
+                        document.getElementById( "text" ).innerText = "";
+                        showImage( "assets/kimmyIdle.gif" );
+                        isWaving = false;
+                    }, 2500 );
+                }
+
+                prevTime = timestamp;
+
+                requestAnimationFrame( updateFrame );
+            }
+            requestAnimationFrame( updateFrame );
+        </script>
+    </body>
+</html>
