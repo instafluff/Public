@@ -29,7 +29,7 @@ socket.addEventListener( "message", function ( event ) {
     }
     console.log( data );
     if( data.data.channelname === "maayainsane" ) {
-        showPayPalAlert( "Someone ordered from the !shop");
+        showPayPalAlert( `Someone ordered ${data.data.item}!`);
     }
 });
 
