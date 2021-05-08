@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>Maaya Shop Alert</title>
+        <link rel="stylesheet" href="fonts.css" />
+        <script src="https://cdn.jsdelivr.net/npm/pinkfluffyunicorn@1.0.2/dist/pinkfluffyunicorn.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
+        <script src="paypalalert.js"></script>
+        <style>
+            * {
+                background-color: transparent;
+                margin: 0;
+                padding: 0;
+                border: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="unicorn-display"></div>
+        <script>
+            const params = new URLSearchParams( location.search );
+            setupGame( "Maaya Shope Alerts", {
+                path: "https://www.pixelplush.dev",
+            }, {
+                channel: params.get( "channel" ),
+                volume: params.get( "volume" ),
+            });
+        </script>
+    </body>
+</html>
