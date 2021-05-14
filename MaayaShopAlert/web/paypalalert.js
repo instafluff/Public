@@ -45,8 +45,8 @@ function setupGame( title, theme, options ) {
 window.setupGame = setupGame;
 
 window.WebFontConfig = {
-    custom: {
-        families: [ "Pixellari" ]
+    google: {
+        families: [ "Nunito" ]
     },
     active() {
         CreateGame();
@@ -70,7 +70,7 @@ function Init() {
     // Add Initialization Here
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
-    Unicorn.Load( "alert_light", `${assetPath}/assets/alerts/alert_light.png` );
+    Unicorn.Load( "alert_light", `/alert1.png` );
     Unicorn.Load( "sfx_item", `${assetPath}/assets/alerts/Postive_Bubble_Jingle_01_1.wav` );
 }
 
@@ -88,7 +88,7 @@ function showPayPalAlert( message = "New PayPal Purchase!" ) {
     } );
 
     let alertText = Unicorn.AddText( "alerttext_" + alertId, message, x + 20, y + 40, {
-        fontFamily: 'Pixellari',
+        fontFamily: 'Nunito',
         fontSize: 42,
         // fontWeight: 'bold',
         fill: "#663931",
@@ -149,7 +149,7 @@ async function OnChatCommand( user, command, message, flags, extra ) {
     }
 	if( ( flags.broadcaster || flags.mod ) &&
         ( command === "testpaypal" ) ) {
-        showPayPalAlert( "Someone ordered from the !shop" );
+        showPayPalAlert( "New !shop order: Maaya Print (A100)" );
     }
 }
 
