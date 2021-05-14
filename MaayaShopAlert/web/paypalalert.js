@@ -70,7 +70,7 @@ function Init() {
     // Add Initialization Here
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
-    Unicorn.Load( "alert_light", `/web/alert1.png` );
+    Unicorn.Load( "alert_light", `web/alert1.png` );
     Unicorn.Load( "sfx_item", `${assetPath}/assets/alerts/Postive_Bubble_Jingle_01_1.wav` );
 }
 
