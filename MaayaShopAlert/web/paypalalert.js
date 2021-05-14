@@ -29,7 +29,12 @@ socket.addEventListener( "message", function ( event ) {
     }
     console.log( data );
     if( data.data.channelname === "maayainsane" ) {
-        showPayPalAlert( `New !shop order: ${data.data.item}!`);
+        if( data.data.items.length === 1 ) {
+            showPayPalAlert( `${data.data.items[ 0 ]} for $${data.data.price}` );
+        }
+        else {
+            showPayPalAlert( `${data.data.items.length} Items for $${data.data.price}` );
+        }
     }
 });
 
@@ -71,7 +76,7 @@ function Init() {
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
     Unicorn.Load( "alert_light", `web/alert1.png` );
-    Unicorn.Load( "sfx_item", `${assetPath}/assets/alerts/Postive_Bubble_Jingle_01_1.wav` );
+    Unicorn.Load( "sfx_item", `web/Arcade_Positive_Event_07_1.wav` );
 }
 
 let alertQueue = []; // TODO: Add alert queue
@@ -84,30 +89,49 @@ function showPayPalAlert( message = "New PayPal Purchase!" ) {
     const x = 100, y = -400;
     const alertId = alertCounter;
     let alertBG = Unicorn.AddBacklay( "alert_" + alertId, "alert_light", x, y, {
-        scale: { x: 3, y: 3 }
+        // scale: { x: 3, y: 3 }
     } );
 
-    let alertText = Unicorn.AddText( "alerttext_" + alertId, message, x + 20, y + 40, {
+    let alertUpper = Unicorn.AddText( "alertupper_" + alertId, "New !shop order:", x + 20, y + 40, {
         fontFamily: 'Nunito',
         fontSize: 42,
-        // fontWeight: 'bold',
-        fill: "#663931",
+        fontWeight: 'bold',
+        fill: "#ffffff",
+        lineJoin: "round",
+    } );
+
+    let alertText = Unicorn.AddText( "alerttext_" + alertId, message, x + 20, y + 100, {
+        fontFamily: 'Nunito',
+        fontSize: 42,
+        fontWeight: 'bold',
+        fill: "#ffffff",
         lineJoin: "round",
     } );
 
 
     // Center the text
-    const alertWidth = 759;
-    let textWidth = alertText.width + 10;
-    alertText.position.x = x + ( alertWidth - textWidth ) / 2;
+    const alertWidth = 759 - 250;
+    let textWidth = alertUpper.width + 10;
+    alertUpper.position.x = x + 250 + ( alertWidth - textWidth ) / 2;
+    if( alertText.width < alertWidth ) {
+        alertText.position.x = x + 250 + ( alertWidth - alertText.width ) / 2;
+    }
+    else {
+        // Adjust to fit the width
+        let scale = alertWidth / alertText.width;
+        alertText.scale.x = scale;
+        alertText.scale.y = scale;
+        alertText.position.x = x + 250;
+    }
 
     alertQueue.push( {
         type: "paypal",
-        elements: [ alertBG, alertText ],
-        yOffsets: [ 0, 40 ],
+        elements: [ alertBG, alertUpper, alertText ],
+        yOffsets: [ 0, 95, 155 ],
         time: alertTime,
         cleanup: () => {
             Unicorn.RemoveBacklay( "alert_" + alertId );
+            Unicorn.RemoveText( "alertupper_" + alertId );
             Unicorn.RemoveText( "alerttext_" + alertId );
         }
     });
@@ -149,7 +173,11 @@ async function OnChatCommand( user, command, message, flags, extra ) {
     }
 	if( ( flags.broadcaster || flags.mod ) &&
         ( command === "testpaypal" ) ) {
-        showPayPalAlert( "New !shop order: Maaya Print (A100)" );
+        showPayPalAlert( "Maaya Print (A100)" );
+    }
+	if( ( flags.broadcaster || flags.mod ) &&
+        ( command === "testpaypallong" ) ) {
+        showPayPalAlert( "SUPER DUPER LONG NAME Maaya Print (A100)" );
     }
 }
 
