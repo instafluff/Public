@@ -30,10 +30,10 @@ socket.addEventListener( "message", function ( event ) {
     console.log( data );
     if( data.data.channelname === "maayainsane" ) {
         if( data.data.items.length === 1 ) {
-            showPayPalAlert( `${data.data.items[ 0 ]} for $${data.data.price}` );
+            showPayPalAlert( `${data.data.items[ 0 ]} for $${data.data.price}`, data.data.price );
         }
         else {
-            showPayPalAlert( `${data.data.items.length} Items for $${data.data.price}` );
+            showPayPalAlert( `${data.data.items.length} Items for $${data.data.price}`, data.data.price );
         }
     }
 });
@@ -76,7 +76,9 @@ function Init() {
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
     Unicorn.Load( "alert_light", `web/alert1.png` );
-    Unicorn.Load( "sfx_item", `web/Arcade_Positive_Event_07_1.wav` );
+    Unicorn.Load( "sfx_item", `web/Event13.mp3` );
+    Unicorn.Load( "sfx_item_special", `web/Event18.mp3` );
+    Unicorn.Load( "sfx_item_big", `web/slots_bigwin_001.mp3` );
 }
 
 let alertQueue = []; // TODO: Add alert queue
@@ -84,7 +86,7 @@ let itemCache = [];
 let alertCounter = 0;
 const framerate = 0.5 * 16 / 60;
 const alertTime = 5.0;
-function showPayPalAlert( message = "New PayPal Purchase!" ) {
+function showPayPalAlert( message = "New PayPal Purchase!", amount = 10 ) {
     alertCounter++;
     const x = 100, y = -400;
     const alertId = alertCounter;
@@ -129,6 +131,7 @@ function showPayPalAlert( message = "New PayPal Purchase!" ) {
         elements: [ alertBG, alertUpper, alertText ],
         yOffsets: [ 0, 95, 155 ],
         time: alertTime,
+        amount: amount,
         cleanup: () => {
             Unicorn.RemoveBacklay( "alert_" + alertId );
             Unicorn.RemoveText( "alertupper_" + alertId );
@@ -146,9 +149,21 @@ function Update( timestamp, timeDiffInMs ) {
             // Play sound
             switch( alertQueue[ 0 ].type ) {
             case "paypal":
-                Unicorn.PlaySound( "sfx_item", {
-                    volume: gameVolume
-                } );
+                if( alertQueue[ 0 ].amount >= 400 ) {
+                    Unicorn.PlaySound( "sfx_item_big", {
+                        volume: gameVolume
+                    } );
+                }
+                else if( alertQueue[ 0 ].amount >= 100 ) {
+                    Unicorn.PlaySound( "sfx_item_special", {
+                        volume: gameVolume * 2
+                    } );
+                }
+                else {
+                    Unicorn.PlaySound( "sfx_item", {
+                        volume: gameVolume
+                    } );
+                }
                 break;
             }
         }
@@ -172,12 +187,16 @@ async function OnChatCommand( user, command, message, flags, extra ) {
     	location.reload();
     }
 	if( ( flags.broadcaster || flags.mod ) &&
-        ( command === "testpaypal" ) ) {
-        showPayPalAlert( "Maaya Print (A100)" );
-    }
-	if( ( flags.broadcaster || flags.mod ) &&
         ( command === "testpaypallong" ) ) {
         showPayPalAlert( "SUPER DUPER LONG NAME Maaya Print (A100)" );
+    }
+    if( ( flags.broadcaster || flags.mod ) &&
+        ( command === "testallprints" ) ) {
+        showPayPalAlert( "ALL PRINTS (A5)", 600 );
+    }
+    if( ( flags.broadcaster || flags.mod ) &&
+        ( command === "testpaypal" ) ) {
+        showPayPalAlert( `WOW for $${message}`, parseInt( message || 10 ) );
     }
 }
 
