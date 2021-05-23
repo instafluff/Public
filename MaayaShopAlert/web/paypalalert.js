@@ -27,6 +27,9 @@ socket.addEventListener( "message", function ( event ) {
     if( data.type === "pong" ) {
         return;
     }
+    if( data.type !== "paypal" ) {
+        return;
+    }
     console.log( data );
     if( data.data.channelname === "maayainsane" ) {
         if( data.data.items.length === 1 ) {
