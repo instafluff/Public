@@ -27,7 +27,7 @@ socket.addEventListener( "message", function ( event ) {
     if( data.type === "pong" ) {
         return;
     }
-    if( data.type !== "paypal" ) {
+    if( data.data.type !== "paypal" ) {
         return;
     }
     console.log( data );
