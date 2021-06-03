@@ -10,7 +10,7 @@ let gameVolume = 0.5;
 const socket = new ReconnectingWebSocket( "wss://fluffybunny.instafluff.tv" );
 
 socket.addEventListener( "open", function ( event ) {
-    // socket.send('Hello Server!');
+    socket.send('Hello Server!');
     if( pingInterval ) {
         clearInterval( pingInterval );
     }
@@ -24,6 +24,7 @@ socket.addEventListener( "open", function ( event ) {
 // Listen for messages
 socket.addEventListener( "message", function ( event ) {
     let data = JSON.parse( event.data );
+    console.log( data );
     if( data.type === "pong" ) {
         return;
     }
