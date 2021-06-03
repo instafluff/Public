@@ -33,7 +33,7 @@ socket.addEventListener( "message", function ( event ) {
         return;
     }
     console.log( data );
-    if( data.data.channelname === "maayainsane" ) {
+    if( data.data.channelname === "maayainsane" && data.data.type === "logchange" ) {
         if( data.data.items.length === 1 ) {
             showPayPalAlert( `${data.data.items[ 0 ]} for $${data.data.price}`, data.data.price );
         }
