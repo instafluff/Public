@@ -25,6 +25,7 @@ socket.addEventListener( "open", function ( event ) {
 // Listen for messages
 socket.addEventListener( "message", function ( event ) {
     let data = JSON.parse( event.data );
+    console.log( data );
     if( data.type === "pong" ) {
         return;
     }
