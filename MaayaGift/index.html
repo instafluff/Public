@@ -37,10 +37,10 @@
                 }
                 if( message.startsWith( "GivePLZ" ) || message.startsWith( "PrideGive" ) || message.startsWith( "maayaHug" ) ) {
                     let gift = gifts[ Math.floor( gifts.length * Math.random() ) ];
-                    ComfyJS.Say( `/me ${user} gives a ${gift} to MaayaInsane! GivePLZ 🎁` );
+                    ComfyJS.Say( `/me ${user} gives a ${gift} to Maaya! GivePLZ 🎁` );
                 }
             }
-            ComfyJS.Init( "maayainsane", oauth );
+            ComfyJS.Init( "maaya", oauth );
         </script>
     </body>
 </html>
